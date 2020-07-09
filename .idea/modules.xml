@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/API/API.iml" filepath="$PROJECT_DIR$/API/API.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MyPoop.iml" filepath="$PROJECT_DIR$/MyPoop.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MyPoopPlugin/MyPoopPlugin.iml" filepath="$PROJECT_DIR$/MyPoopPlugin/MyPoopPlugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/v1_10_R0/v1_10_R0.iml" filepath="$PROJECT_DIR$/v1_10_R0/v1_10_R0.iml" />
+      <module fileurl="file://$PROJECT_DIR$/v1_11_R0/v1_11_R0.iml" filepath="$PROJECT_DIR$/v1_11_R0/v1_11_R0.iml" />
+      <module fileurl="file://$PROJECT_DIR$/v1_12_R0/v1_12_R0.iml" filepath="$PROJECT_DIR$/v1_12_R0/v1_12_R0.iml" />
+      <module fileurl="file://$PROJECT_DIR$/v1_13_R0/v1_13_R0.iml" filepath="$PROJECT_DIR$/v1_13_R0/v1_13_R0.iml" />
+      <module fileurl="file://$PROJECT_DIR$/v1_14_R0/v1_14_R0.iml" filepath="$PROJECT_DIR$/v1_14_R0/v1_14_R0.iml" />
+      <module fileurl="file://$PROJECT_DIR$/v1_15_R0/v1_15_R0.iml" filepath="$PROJECT_DIR$/v1_15_R0/v1_15_R0.iml" />
+      <module fileurl="file://$PROJECT_DIR$/v1_16_R0/v1_16_R0.iml" filepath="$PROJECT_DIR$/v1_16_R0/v1_16_R0.iml" />
+      <module fileurl="file://$PROJECT_DIR$/v1_8_R0/v1_8_R0.iml" filepath="$PROJECT_DIR$/v1_8_R0/v1_8_R0.iml" />
+      <module fileurl="file://$PROJECT_DIR$/v1_9_R0/v1_9_R0.iml" filepath="$PROJECT_DIR$/v1_9_R0/v1_9_R0.iml" />
+    </modules>
+  </component>
+</project>

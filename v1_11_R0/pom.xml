@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>me.spighetto</groupId>
+    <artifactId>mypoop-v1_11_R0</artifactId>
+    <version>v1_11_R0</version>
+    <packaging>jar</packaging>
+
+    <name>Mypoop V1_11_R0</name>
+
+    <parent>
+        <groupId>me.spighetto</groupId>
+        <artifactId>mypoop-parent</artifactId>
+        <version>parent</version>
+    </parent>
+
+    <properties>
+        <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.spigotmc</groupId>
+            <artifactId>spigot</artifactId>
+            <version>1.11.2-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>me.spighetto</groupId>
+            <artifactId>mypoop-api</artifactId>
+            <version>API</version>
+            <type>jar</type>
+        </dependency>
+    </dependencies>
+</project>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="v1_14_R0" />
+        <module name="v1_16_R0" />
+        <module name="v1_11_R0" />
+        <module name="API" />
+        <module name="v1_9_R0" />
+        <module name="v1_13_R0" />
+        <module name="v1_15_R0" />
+        <module name="v1_10_R0" />
+        <module name="v1_8_R0" />
+        <module name="v1_12_R0" />
+      </profile>
+      <profile name="Annotation profile for MyPoop Parent" enabled="true">
+        <sourceOutputDir name="../target/generated-sources/annotations" />
+        <sourceTestOutputDir name="../target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="MyPoopPlugin" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel target="8">
+      <module name="API" target="1.8" />
+      <module name="MyPoop" target="1.5" />
+      <module name="MyPoopPlugin" target="1.8" />
+      <module name="v1_10_R0" target="1.8" />
+      <module name="v1_11_R0" target="1.8" />
+      <module name="v1_12_R0" target="1.8" />
+      <module name="v1_13_R0" target="1.8" />
+      <module name="v1_14_R0" target="1.8" />
+      <module name="v1_15_R0" target="1.8" />
+      <module name="v1_16_R0" target="1.8" />
+      <module name="v1_8_R0" target="1.8" />
+      <module name="v1_9_R0" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+  <component name="JavacSettings">
+    <option name="PREFER_TARGET_JDK_COMPILER" value="false" />
+  </component>
+</project>
