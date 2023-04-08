@@ -5,6 +5,7 @@
       <item index="0" class="java.lang.String" itemvalue="org.bukkit.event.EventHandler" />
     </list>
   </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="MavenProjectsManager">
     <option name="originalFiles">
       <list>
@@ -14,16 +15,22 @@
         <option value="$PROJECT_DIR$/v1_9_R0/pom.xml" />
         <option value="$PROJECT_DIR$/v1_10_R0/pom.xml" />
         <option value="$PROJECT_DIR$/v1_11_R0/pom.xml" />
-        <option value="$PROJECT_DIR$/v1_12_R0/pom.xml" />
         <option value="$PROJECT_DIR$/v1_13_R0/pom.xml" />
         <option value="$PROJECT_DIR$/v1_14_R0/pom.xml" />
         <option value="$PROJECT_DIR$/v1_15_R0/pom.xml" />
         <option value="$PROJECT_DIR$/v1_8_R0/pom.xml" />
         <option value="$PROJECT_DIR$/v1_16_R0/pom.xml" />
+        <option value="$PROJECT_DIR$/My/pom.xml" />
       </list>
     </option>
+    <option name="ignoredFiles">
+      <set>
+        <option value="$PROJECT_DIR$/v1_10/pom.xml" />
+        <option value="$PROJECT_DIR$/v1_9/pom.xml" />
+      </set>
+    </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
 </project>

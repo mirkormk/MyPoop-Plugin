@@ -1,4 +1,0 @@
-name: Mypoop V1_11_R0
-version: ${project.version}
-main: me.spighetto.mypoopv1_11_r0.NMSHandler
-api-version: 1.13

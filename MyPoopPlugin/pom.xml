@@ -6,7 +6,7 @@
 
     <groupId>me.spighetto</groupId>
     <artifactId>mypoop</artifactId>
-    <version>2.0.0</version>
+    <version>2.2.0</version>
     <packaging>jar</packaging>
 
     <name>MyPoopPlugin</name>
@@ -27,90 +27,74 @@
     <dependencies>
         <dependency>
             <groupId>me.spighetto</groupId>
-            <artifactId>mypoop-api</artifactId>
-            <version>API</version>
+            <artifactId>mypoopversionsinterfaces</artifactId>
+            <version>1.0.0</version>
             <type>jar</type>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>me.spighetto</groupId>
-            <artifactId>mypoop-v1_8_R0</artifactId>
-            <version>v1_8_R0</version>
+            <artifactId>mypoop-v1_8</artifactId>
+            <version>1.0.0</version>
             <type>jar</type>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>me.spighetto</groupId>
-            <artifactId>mypoop-v1_9_R0</artifactId>
-            <version>v1_9_R0</version>
+            <artifactId>mypoop-v1_11</artifactId>
+            <version>1.0.0</version>
             <type>jar</type>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>me.spighetto</groupId>
-            <artifactId>mypoop-v1_10_R0</artifactId>
-            <version>v1_10_R0</version>
+            <artifactId>mypoop-v1_13</artifactId>
+            <version>1.0.0</version>
             <type>jar</type>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>me.spighetto</groupId>
-            <artifactId>mypoop-v1_11_R0</artifactId>
-            <version>v1_11_R0</version>
+            <artifactId>mypoop-v1_14</artifactId>
+            <version>1.0.0</version>
             <type>jar</type>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>me.spighetto</groupId>
-            <artifactId>mypoop-v1_12_R0</artifactId>
-            <version>v1_12_R0</version>
+            <artifactId>mypoop-v1_15</artifactId>
+            <version>1.0.0</version>
             <type>jar</type>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>me.spighetto</groupId>
-            <artifactId>mypoop-v1_13_R0</artifactId>
-            <version>v1_13_R0</version>
+            <artifactId>mypoop-v1_16</artifactId>
+            <version>1.0.0</version>
             <type>jar</type>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>me.spighetto</groupId>
-            <artifactId>mypoop-v1_14_R0</artifactId>
-            <version>v1_14_R0</version>
-            <type>jar</type>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>me.spighetto</groupId>
-            <artifactId>mypoop-v1_15_R0</artifactId>
-            <version>v1_15_R0</version>
-            <type>jar</type>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>me.spighetto</groupId>
-            <artifactId>mypoop-v1_16_R0</artifactId>
-            <version>v1_16_R0</version>
-            <type>jar</type>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
+        <!--        <dependency>
+                    <groupId>org.spigotmc</groupId>
+                    <artifactId>spigot-api</artifactId>
+                    <version>1.13.2-R0.1-SNAPSHOT</version>
+                    <type>jar</type>
+                    <scope>provided</scope>
+                    <optional>true</optional>
+                </dependency>-->
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.13.2-R0.1-SNAPSHOT</version>
-            <type>jar</type>
+            <version>1.19.4-R0.1-SNAPSHOT</version>
+            <!--            <scope>compile</scope>-->
             <scope>provided</scope>
-            <optional>true</optional>
         </dependency>
     </dependencies>
 
@@ -148,6 +132,14 @@
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <encoding>utf-8</encoding>
                 </configuration>
             </plugin>
         </plugins>
