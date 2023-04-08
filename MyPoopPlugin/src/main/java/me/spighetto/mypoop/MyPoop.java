@@ -2,116 +2,134 @@ package me.spighetto.mypoop;
 
 import me.spighetto.commands.Reload;
 import me.spighetto.events.playerevents.PlayerEvents;
-import me.spighetto.updateChecker.UpdateChecker;
+import me.spighetto.mypoopversionsinterfaces.IPoop;
 import me.spighetto.stats.Metrics;
+import me.spighetto.updateChecker.UpdateChecker;
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.World;
+import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
-import java.util.UUID;
+import java.util.*;
 
-public class MyPoop extends JavaPlugin {
-
-    public static MyPoop plugin;
-    public static ArrayList<UUID> listPoops;
-    public static int serverVersion;
+public final class MyPoop extends JavaPlugin {
+    public Map<UUID, Integer> playersLevelFood = new HashMap<>();
+    private PoopConfig config;
+    public ArrayList<UUID> listPoops = new ArrayList<>();
+    public int serverVersion;
 
     @Override
     public void onEnable() {
-        plugin = this;
-
-        getServer().getPluginManager().registerEvents(new PlayerEvents(), this);
-        getVersion();
+        serverVersion = parseVersion();
 
         if(!isCompatibleVersion()){
             Bukkit.getConsoleSender().sendMessage("MyPoop: Error: incompatible server version");
         }
 
-        Metrics metrics = new Metrics(this, 8159);
-
-        getCommand("mypoop").setExecutor(new Reload());
-
         saveDefaultConfig();
+        readConfigs();
+        super.getServer().getPluginManager().registerEvents(new PlayerEvents(this), this);
+        new Metrics(this, 8159);
 
-        /*
-        String packageName = this.getServer().getClass().getPackage().getName();
-        String version = packageName.substring(packageName.lastIndexOf('.') + 1);
-        checkVersion(version);
-        */
+        Objects.requireNonNull(getCommand("mypoop")).setExecutor(new Reload(this));
 
-        setVariables();
-
-        if (getInstance().getConfig().getBoolean("updateChecker")) {
+        if (this.getConfig().getBoolean("updateChecker")) {
             new UpdateChecker(this, 77372, "MyPoop");
         }
     }
 
     @Override
     public void onDisable() {
-        Reload.deletePoops();
+        deletePoops();
     }
 
-    public static MyPoop getInstance() {
-        return plugin;
-    }
+    public void deletePoops() {
+        if(listPoops.size() > 0) {
+            ArrayList<Entity> en = new ArrayList<>();
 
-    private void getVersion() {
-        try {
-            serverVersion = Integer.parseInt(Bukkit.getBukkitVersion().split("-")[0].split("\\.")[1]);
-        } catch (Exception e){
-            Bukkit.getConsoleSender().sendMessage("MyPoop: Error: the server version could not be verified or incorrect server version");
-            serverVersion = -1;
+            for(World world : this.getServer().getWorlds()) {
+                for(Entity entityInWorld : world.getEntities()) {
+                    for(UUID ii : this.listPoops) {
+                        if(ii.equals(entityInWorld.getUniqueId())) {
+                            en.add(entityInWorld);
+                        }
+                    }
+                }
+            }
+
+            this.listPoops.clear();
+
+            en.forEach(Entity::remove);		// Method reference technique
         }
+    }
 
+    private int parseVersion() {
+        try {
+            return Integer.parseInt(Bukkit.getBukkitVersion().split("-")[0].split("\\.")[1]);
+        } catch (Exception e){
+            Log("Error: the server version could not be verified or incorrect server version");
+            return -1;
+        }
+    }
+
+    public void newPoop(IPoop poop) {
+        listPoops.add(poop.getPoopItem().getUniqueId());
+        Chunk poopChunk = poop.getPoopItem().getLocation().getChunk();
+
+        Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
+            listPoops.remove(poop.getPoopItem().getUniqueId());
+
+            boolean needToLoad = poopChunk.isLoaded();
+            if(!needToLoad)
+                poopChunk.load();
+
+            poop.delete();
+
+            if(!needToLoad)
+                poopChunk.unload();
+
+        }, this.getPoopConfig().getDelay());
     }
 
     private boolean isCompatibleVersion() {
         return serverVersion >= 8 && serverVersion <= 19;
     }
 
-    private void setVariables() {
-
-        String poopDisplayName = "";
-        Boolean namedPoop = null;
+    private void readConfigs() {
 
         try {
-            int delay = getInstance().getConfig().getInt("poopSettings.delay");
-            PlayerEvents.delay = (long) delay * 20;
+            config = new PoopConfig(
+                    this.getConfig().getInt("poopSettings.trigger"),
+                    this.getConfig().getInt("poopSettings.limit"),
+                    this.getConfig().getLong("poopSettings.delay") * 20,
+                    this.getConfig().getBoolean("poopSettings.namedPoop"),
+                    this.getConfig().getString("poopSettings.colorPoopName"),
+                    this.getConfig().getString("poopSettings.poopDisplayName"),
+                    this.getConfig().getString("alerts.message"),
+                    this.getConfig().getString("alerts.messageAtLimit"),
+                    this.getConfig().getInt("alerts.wherePrint"),
+                    this.getConfig().getBoolean("growingSettings.allCropsNearby"),
+                    this.getConfig().getDouble("growingSettings.radius"),
+                    this.getConfig().getBoolean("growingSettings.randomGrow")
+            );
 
-            PlayerEvents.trigger = getInstance().getConfig().getInt("poopSettings.trigger");
-            PlayerEvents.limit = getInstance().getConfig().getInt("poopSettings.limit");
-            if(PlayerEvents.limit < PlayerEvents.trigger){
-                PlayerEvents.limit = PlayerEvents.trigger;
+            if(config.getLimit() < config.getTrigger()){
+                config.setLimit(config.getTrigger());
             }
-            PlayerEvents.colorPoopName = getInstance().getConfig().getString("poopSettings.colorPoopName");
-            PlayerEvents.message = getInstance().getConfig().getString("alerts.message");
-            PlayerEvents.messageAtLimit = getInstance().getConfig().getString("alerts.messageAtLimit");
-            PlayerEvents.wherePrint = getInstance().getConfig().getInt("alerts.wherePrint");
-
-            poopDisplayName = getInstance().getConfig().getString("poopSettings.poopDisplayName");
-            namedPoop = getInstance().getConfig().getBoolean("poopSettings.namedPoop");
-
-            // Next to add
-//            FertilizerEvent.allCropsNearby = getInstance().getConfig().getBoolean("growingSettings.allCropsNearby");
-//            FertilizerEvent.randomGrow = getInstance().getConfig().getBoolean("growingSettings.randomGrow");
-//            FertilizerEvent.radius = getInstance().getConfig().getDouble("growingSettings.radius");
 
         } catch (Exception e) {
-            System.out.println(e);
+            Log("Error: some value inside the config.yml has not been configured correctly. " +
+                    "\n\t\tTip: save a copy of your current config.yml, delete from MyPoop's folder and reload the plugin to regenerate it as default. " +
+                    "Finally pay attention to recopy your saved values to the new config.yml");
         }
-
-//        ItemStack item = wrapper.getCocoaBeans();
-//
-//        ItemMeta meta = item.getItemMeta();
-//        PlayerEvents.metaCocoa = meta;
-//        PlayerEvents.itemCocoa = item;
-        PlayerEvents.namedPoop = namedPoop;
-        PlayerEvents.poopDisplayName = poopDisplayName;
-//        PlayerEvents.metaCocoa.setLore(Arrays.asList("Poop"));
-//        PlayerEvents.itemCocoa.setItemMeta(PlayerEvents.metaCocoa);
-
-        listPoops = new ArrayList<UUID>();
-
     }
 
+    public PoopConfig getPoopConfig(){
+        return config;
+    }
+
+    public void Log(String text) {
+        Bukkit.getConsoleSender().sendMessage("MyPoop: " + text);
+    }
 }

@@ -1,7 +1,7 @@
 name: MyPoop
 version: ${project.version}
 main: me.spighetto.mypoop.MyPoop
-api-version: 1.13
+api-version: 1.19
 authors: [Spighetto]
 description: This plugin allows players to poop
 commands:

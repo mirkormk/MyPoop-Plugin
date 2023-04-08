@@ -50,8 +50,8 @@ alerts:
   wherePrint: 3
 
 # -- Coming soon --
-#growingSettings:
-#  allCropsNearby: false
-#  radius: 3
-#  randomGrow: false
+growingSettings:
+  allCropsNearby: false
+  radius: 3
+  randomGrow: false
 

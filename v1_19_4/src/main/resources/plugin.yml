@@ -1,0 +1,4 @@
+name: MyPoop_v1_19_4
+version: '${project.version}'
+main: me.spighetto.mypoopv1_19_4.MyPoop_v1_19_4
+api-version: 1.19

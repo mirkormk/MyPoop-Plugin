@@ -2,26 +2,29 @@ package me.spighetto.commands;
 
 import me.spighetto.mypoop.MyPoop;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
 
-import java.util.ArrayList;
-import java.util.UUID;
+import javax.validation.constraints.NotNull;
 
 public class Reload implements CommandExecutor{
 
+	private final MyPoop plugin;
+
+	public Reload(MyPoop plugin) {
+		this.plugin = plugin;
+	}
+
 	@Override
-	public boolean onCommand(CommandSender sender, Command cmd, String nome, String[] args) {
+	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String nome, @NotNull String[] args) {
 		
 		if(cmd.getName().equalsIgnoreCase("mypoop")) {
 			if(args.length == 0) {
 				return false;
 			} else if(args[0].equalsIgnoreCase("reload")) {
 				
-				deletePoops();
+				plugin.deletePoops();
 				
 				try {
 					onReload();
@@ -36,28 +39,11 @@ public class Reload implements CommandExecutor{
 
 		return false;
 	}
-	
-	public static void deletePoops() {
-		ArrayList<Entity> en = new ArrayList<>();
-		
-		for(World world : MyPoop.getInstance().getServer().getWorlds()) {
-			for(Entity entityInWorld : world.getEntities()) {
-				for(UUID ii : MyPoop.listPoops) {
-					if(ii.equals(entityInWorld.getUniqueId())) {
-						en.add(entityInWorld);
-					}
-				}
-			}
-		}
-		
-		MyPoop.listPoops.clear();
-		
-		en.forEach(Entity::remove);		// Method reference technique
-	}
 
 	public void onReload() {
-		MyPoop.getInstance().reloadConfig();
-		MyPoop.getInstance().getServer().getPluginManager().disablePlugin(MyPoop.getInstance());
-		MyPoop.getInstance().getServer().getPluginManager().enablePlugin(MyPoop.getInstance());
+		plugin.reloadConfig();
+		plugin.getServer().getPluginManager().disablePlugin(plugin);
+		plugin.getServer().getPluginManager().enablePlugin(plugin);
 	}
+
 }

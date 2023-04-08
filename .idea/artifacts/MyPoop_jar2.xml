@@ -1,0 +1,16 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="MyPoop:jar2">
+    <output-path>$PROJECT_DIR$/out/artifacts/MyPoop_jar2</output-path>
+    <root id="archive" name="MyPoop.jar">
+      <element id="library" level="project" name="Maven: commons-lang:commons-lang:2.6" />
+      <element id="library" level="project" name="Maven: com.google.guava:guava:21.0" />
+      <element id="library" level="project" name="Maven: com.google.code.gson:gson:2.8.0" />
+      <element id="library" level="project" name="Maven: org.yaml:snakeyaml:1.26" />
+      <element id="module-output" name="mypoop" />
+      <element id="module-output" name="mypoopversionsinterfaces" />
+      <element id="module-output" name="mypoop-v1_8" />
+      <element id="module-output" name="mypoop-v1_11" />
+      <element id="module-output" name="mypoop-v1_13" />
+    </root>
+  </artifact>
+</component>

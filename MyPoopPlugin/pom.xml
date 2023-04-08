@@ -59,42 +59,22 @@
         </dependency>
         <dependency>
             <groupId>me.spighetto</groupId>
-            <artifactId>mypoop-v1_14</artifactId>
+            <artifactId>mypoop-v1_19_4</artifactId>
             <version>1.0.0</version>
             <type>jar</type>
             <scope>compile</scope>
             <optional>true</optional>
         </dependency>
-        <dependency>
-            <groupId>me.spighetto</groupId>
-            <artifactId>mypoop-v1_15</artifactId>
-            <version>1.0.0</version>
-            <type>jar</type>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>me.spighetto</groupId>
-            <artifactId>mypoop-v1_16</artifactId>
-            <version>1.0.0</version>
-            <type>jar</type>
-            <scope>compile</scope>
-            <optional>true</optional>
-        </dependency>
-        <!--        <dependency>
-                    <groupId>org.spigotmc</groupId>
-                    <artifactId>spigot-api</artifactId>
-                    <version>1.13.2-R0.1-SNAPSHOT</version>
-                    <type>jar</type>
-                    <scope>provided</scope>
-                    <optional>true</optional>
-                </dependency>-->
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>1.19.4-R0.1-SNAPSHOT</version>
-            <!--            <scope>compile</scope>-->
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>1.1.0.Final</version>
         </dependency>
     </dependencies>
 

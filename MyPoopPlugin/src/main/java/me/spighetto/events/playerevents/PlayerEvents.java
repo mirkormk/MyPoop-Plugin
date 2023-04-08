@@ -1,13 +1,14 @@
 package me.spighetto.events.playerevents;
 
+import me.spighetto.events.fertilizerevent.Fertilizer;
 import me.spighetto.mypoop.MyPoop;
 import me.spighetto.mypoopv1_11.Messages_v1_11;
 import me.spighetto.mypoopv1_13.Poop_v1_13;
+import me.spighetto.mypoopv1_19_4.MyPoop_v1_19_4;
 import me.spighetto.mypoopv1_8.Messages_v1_8;
 import me.spighetto.mypoopv1_8.Poop_v1_8;
 import me.spighetto.mypoopversionsinterfaces.IMessages;
 import me.spighetto.mypoopversionsinterfaces.IPoop;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -19,78 +20,43 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
 public class PlayerEvents implements Listener {
+    private final MyPoop plugin;
 
-    public static Map<UUID, Integer> playersLevelFood = new HashMap<>();
-
-//    public static ItemStack itemCocoa;
-//    public static ItemMeta metaCocoa;
-
-    public static int trigger;
-    public static int limit;
-    public static long delay;
-    public static Boolean namedPoop;
-    public static String poopDisplayName;
-    public static String colorPoopName;
-
-    public static String message;
-    public static String messageAtLimit;
-    public static int wherePrint;
+    public PlayerEvents(MyPoop plugin){
+        this.plugin = plugin;
+    }
 
     @EventHandler
     public void onPlayerToggleSneak(PlayerToggleSneakEvent event) {
         Player player = event.getPlayer();
 
-        if (playersLevelFood.containsKey(player.getUniqueId())) {
-            if (playersLevelFood.get(player.getUniqueId()) >= trigger) {
+        if (plugin.playersLevelFood.containsKey(player.getUniqueId())) {
+            if (isPlayerFoodTrigger(player)) {
                 if (player.isSneaking()) {
-
-                    //Item i = player.getWorld().dropItem(player.getLocation(), itemCocoa);
                     IPoop poop;
 
-                    if(MyPoop.serverVersion >= 8 && MyPoop.serverVersion <= 11) {
+                    if(plugin.serverVersion >= 8 && plugin.serverVersion <= 11) {
                         poop = new Poop_v1_8(player);
-                    } else if (MyPoop.serverVersion >= 12 && MyPoop.serverVersion <= 19) {
+                    } else if (plugin.serverVersion >= 12 && plugin.serverVersion <= 18) {
                         poop = new Poop_v1_13(player);
-                    } else {
+                    } else if (plugin.serverVersion == 19) {
+                        poop = new MyPoop_v1_19_4(player);
+                    }
+                    else {
                         return;
                     }
-//                    poop = new PoopUpTo1_13_Rx(player);
-//                    Poop_v1_8 = new PoopFrom1_8_Rx_To1_12_R1(player.getLocation().getBlock());
 
-                    // Next to add
-//                    if (MyPoop.getInstance().getConfig().getInt("growingSettings.radius") > -1 && MyPoop.getInstance().getConfig().getInt("growingSettings.radius") < 11) {
-//                        FertilizerEvent fertilizer = new FertilizerEvent(player);
-//                    }
+                    Fertilizer fertilizer = new Fertilizer(plugin, player);
 
-                    if (namedPoop) {
-                        //i.setCustomName(ChatColor.translateAlternateColorCodes('&', colorPoopName + player.getName().toString() + "'s Poop"));
-                        poop.setName(player.getName(), colorPoopName);
+                    if (plugin.getPoopConfig().getNamedPoop()) {
+                        poop.setName(player.getName(), plugin.getPoopConfig().getColorPoopName());
                     } else {
-                        //i.setCustomName(ChatColor.translateAlternateColorCodes('&', poopDisplayName));
                         poop.setName(player.getName());
                     }
-                    //i.setCustomNameVisible(true);
-                    //player.getWorld().playSound(player.getLocation(), Sound.ENTITY_SLIME_HURT, (float) 1.0, (float) 1.5);
-                    //i.setPickupDelay(Integer.MAX_VALUE);
 
-                    MyPoop.listPoops.add(poop.getPoopItem().getUniqueId());
-
-                    Bukkit.getScheduler().scheduleSyncDelayedTask(MyPoop.getInstance(), new Runnable() {
-
-                        @Override
-                        public void run() {
-                            MyPoop.listPoops.remove(poop.getPoopItem().getUniqueId());
-                            poop.delete();
-                        }
-
-                    }, delay);
-
-                    playersLevelFood.remove(player.getUniqueId());
+                    plugin.newPoop(poop);
+                    plugin.playersLevelFood.remove(player.getUniqueId());
                 }
             }
         }
@@ -102,17 +68,17 @@ public class PlayerEvents implements Listener {
 
             Player player = (Player) event.getEntity();
 
-            if (!playersLevelFood.containsKey(player.getUniqueId()))
-                playersLevelFood.put(player.getUniqueId(), 0);
+            if (!plugin.playersLevelFood.containsKey(player.getUniqueId()))
+                plugin.playersLevelFood.put(player.getUniqueId(), 0);
 
-            if (!(playersLevelFood.get(player.getUniqueId()) >= limit)) {
+            if (!isPlayerFoodLimit(player)) {
 
                 if (event.getFoodLevel() - player.getFoodLevel() > 0) {
 
-                    playersLevelFood.put(player.getUniqueId(), playersLevelFood.get(player.getUniqueId()) + event.getFoodLevel() - player.getFoodLevel());
+                    plugin.playersLevelFood.put(player.getUniqueId(), plugin.playersLevelFood.get(player.getUniqueId()) + event.getFoodLevel() - player.getFoodLevel());
 
-                    if (playersLevelFood.get(player.getUniqueId()) >= trigger) {
-                        printMessage(player, message);
+                    if (isPlayerFoodTrigger(player)) {
+                        printMessage(player, plugin.getPoopConfig().getMessage());
                     }
                 }
             }
@@ -121,10 +87,10 @@ public class PlayerEvents implements Listener {
 
     @EventHandler
     public void checkCanEat(PlayerItemConsumeEvent event) {
-        if (playersLevelFood.containsKey(event.getPlayer().getUniqueId())) {
-            if (playersLevelFood.get(event.getPlayer().getUniqueId()) >= limit) {
+        if (plugin.playersLevelFood.containsKey(event.getPlayer().getUniqueId())) {
+            if (isPlayerFoodLimit(event.getPlayer())) {
                 event.setCancelled(true);
-                printMessage(event.getPlayer(), messageAtLimit);
+                printMessage(event.getPlayer(), plugin.getPoopConfig().getMessageAtLimit());
             }
         }
     }
@@ -133,7 +99,7 @@ public class PlayerEvents implements Listener {
     public void checkCanEatCake(PlayerInteractEvent event) {
         if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
             if (event.getClickedBlock().getType().equals(Material.CAKE))
-                if (playersLevelFood.get(event.getPlayer().getUniqueId()) >= limit)
+                if (isPlayerFoodLimit(event.getPlayer()))
                     event.setCancelled(true);
 
     }
@@ -141,31 +107,34 @@ public class PlayerEvents implements Listener {
     public void printMessage(Player player, String msg) {
         IMessages message;
 
-        if(MyPoop.serverVersion >= 8 && MyPoop.serverVersion <= 11) {
+        if(plugin.serverVersion >= 8 && plugin.serverVersion <= 11) {
              message = new Messages_v1_8(player, msg);
-        } else if (MyPoop.serverVersion >= 11 && MyPoop.serverVersion <= 19) {
+        } else if (plugin.serverVersion >= 11 && plugin.serverVersion <= 19) {
             message = new Messages_v1_11(player, msg);
         } else {
             return;
         }
 
-        switch (wherePrint) {
+        switch (plugin.getPoopConfig().getWherePrint()) {
             case 2:
                 message.sendTitle();
-                //MyPoop.wrapper.sendTitle(player, msg);
                 break;
             case 3:
                 message.sendSubtitle();
-                //MyPoop.wrapper.sendSubtitle(player, msg);
                 break;
             case 4:
                 message.printActionBar();
-                //MyPoop.wrapper.printActionBar(player, msg);
                 break;
-            case 1:
             default:
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
                 break;
         }
+    }
+
+    private boolean isPlayerFoodTrigger(Player player){
+        return plugin.playersLevelFood.get(player.getUniqueId()) >= plugin.getPoopConfig().getTrigger();
+    }
+    private boolean isPlayerFoodLimit(Player player){
+        return plugin.playersLevelFood.get(player.getUniqueId()) >= plugin.getPoopConfig().getLimit();
     }
 }
