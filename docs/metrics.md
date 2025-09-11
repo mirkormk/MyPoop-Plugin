@@ -9,10 +9,11 @@ Tracciamento delle metriche di qualità e avanzamento refactor.
 - Dipendenze Bukkit nel core: nessuna
 
 ## Stato attuale
-- Copertura: TBD
+- Copertura: TBD (tests non introdotti ancora)
 - Listener > 30 righe: TBD
 - Comando > 40 righe: TBD
-- Dipendenze Bukkit nel core: TBD
+- Dipendenze Bukkit nel core: N/A (core non creato)
+- Build: Gradle single-module bootstrap DONE (2025-09-10), toolchain Java 17, Maven ancora funzionante
 
 ---
 

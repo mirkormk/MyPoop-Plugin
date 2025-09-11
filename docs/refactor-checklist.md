@@ -3,9 +3,21 @@
 Checklist viva per il refactor incrementale.
 
 ## Roadmap macro
-- [ ] Baseline: creare file docs (decision-log, metrics, checklist, adr, questions)
-- [ ] Tag `pre-refactor-baseline`
+- [x] Baseline: creare file docs (decision-log, metrics, checklist, adr, questions)
+- [x] Tag `pre-refactor-baseline`
 - [ ] Migrazione iniziale Gradle (singolo modulo)
+  - [x] Gradle wrapper
+  - [x] settings.gradle.kts
+  - [x] build.gradle.kts (collega MyPoopPlugin src e resources)
+  - [x] Espansione versione in plugin.yml (processResources)
+  - [x] Build Gradle verde in parallelo a Maven
+  - [ ] Valutare packaging/shading (rimandato a Shadow plugin in step successivi)
+  - [x] Gradle wrapper
+  - [x] settings.gradle.kts
+  - [x] build.gradle.kts (collega MyPoopPlugin src e resources)
+  - [x] Espansione versione in plugin.yml (processResources)
+  - [x] Build Gradle verde in parallelo a Maven
+  - [ ] Valutare packaging/shading (rimandato a Shadow plugin in step successivi)
 - [ ] Tool qualità: Spotless, Checkstyle, JaCoCo
 - [ ] Multi-modulo: `mypoop-core`, `mypoop-plugin`
 - [ ] Estrarre primo servizio di dominio + primo test
