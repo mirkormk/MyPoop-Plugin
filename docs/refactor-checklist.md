@@ -12,13 +12,11 @@ Checklist viva per il refactor incrementale.
   - [x] Espansione versione in plugin.yml (processResources)
   - [x] Build Gradle verde in parallelo a Maven
   - [ ] Valutare packaging/shading (rimandato a Shadow plugin in step successivi)
-  - [x] Gradle wrapper
-  - [x] settings.gradle.kts
-  - [x] build.gradle.kts (collega MyPoopPlugin src e resources)
-  - [x] Espansione versione in plugin.yml (processResources)
-  - [x] Build Gradle verde in parallelo a Maven
-  - [ ] Valutare packaging/shading (rimandato a Shadow plugin in step successivi)
 - [ ] Tool qualità: Spotless, Checkstyle, JaCoCo
+  - [x] Aggiunto Spotless (enforcement disabilitato inizialmente)
+  - [x] Aggiunto Checkstyle (ignoreFailures=true)
+  - [x] Aggiunto JaCoCo (baseline, senza soglie)
+  - [ ] Abilitare enforcement Spotless/Checkstyle gradualmente
 - [ ] Multi-modulo: `mypoop-core`, `mypoop-plugin`
 - [ ] Estrarre primo servizio di dominio + primo test
 - [ ] Definire porte e adapter minimi

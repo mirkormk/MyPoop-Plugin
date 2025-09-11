@@ -3,6 +3,9 @@ import org.gradle.language.jvm.tasks.ProcessResources
 
 plugins {
     java
+    checkstyle
+    jacoco
+    id("com.diffplug.spotless") version "6.25.0"
 }
 
 group = "me.spighetto"
@@ -62,4 +65,36 @@ tasks.named<Jar>("jar") {
     from("v1_11/target/classes") { include("me/**") }
     from("v1_13/target/classes") { include("me/**") }
     from("v1_19_4/target/classes") { include("me/**") }
+}
+
+// ----------------------
+// Quality tooling
+// ----------------------
+spotless {
+    java {
+        googleJavaFormat("1.17.0")
+        target(
+            "MyPoopPlugin/src/**/*.java"
+        )
+    }
+    kotlinGradle {
+        ktlint("1.2.1")
+        target("**/*.gradle.kts")
+    }
+}
+
+checkstyle {
+    toolVersion = "10.12.4"
+    configFile = file("config/checkstyle/checkstyle.xml")
+    isIgnoreFailures = true // non bloccante all'inizio
+}
+
+jacoco {
+    toolVersion = "0.8.10"
+}
+
+// Non bloccare la build iniziale con Spotless
+// Disabilita tutti i task di verifica Spotless (es. spotlessJavaCheck)
+tasks.matching { it.name.startsWith("spotless") && it.name.endsWith("Check") }.configureEach {
+    enabled = false
 }
