@@ -14,6 +14,7 @@ Tracciamento delle metriche di qualità e avanzamento refactor.
 - Comando > 40 righe: TBD
 - Dipendenze Bukkit nel core: N/A (core non creato)
 - Build: Gradle single-module bootstrap DONE (2025-09-10), toolchain Java 17, Maven ancora funzionante
+- Quality: Spotless/Checkstyle/JaCoCo introdotti (2025-09-10), enforcement limitato (non bloccanti)
 
 ---
 

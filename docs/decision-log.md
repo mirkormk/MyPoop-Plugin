@@ -17,4 +17,13 @@ Questo file traccia le decisioni architetturali e di processo prese durante il r
 - Packaging provvisorio: include classi locali dei moduli version (target/classes) senza introdurre Shadow.
 - Rischi: differenze runtime Java; mitigazione: nessuna rimozione di Maven, verifica manuale del jar.
 
+---
+
+## 2025-09-10: Strumenti di qualità iniziali (non bloccanti)
+- Aggiunti Spotless, Checkstyle, JaCoCo.
+- Spotless enforcement disabilitato inizialmente (si userà spotlessApply manuale).
+- Checkstyle attivo con ignoreFailures=true; regole minime (tab, newline EOF).
+- JaCoCo configurato senza soglie (coverage report in seguito).
+- Obiettivo: introdurre standard senza rompere la build.
+
 Aggiungere nuove decisioni in ordine cronologico.
