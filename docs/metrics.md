@@ -15,6 +15,7 @@ Tracciamento delle metriche di qualità e avanzamento refactor.
 - Dipendenze Bukkit nel core: N/A (core non creato)
 - Build: Gradle single-module bootstrap DONE (2025-09-10), toolchain Java 17, Maven ancora funzionante
 - Quality: Spotless/Checkstyle/JaCoCo introdotti (2025-09-10), enforcement limitato (non bloccanti)
+- Build: Gradle multi-modulo (mypoop-core + mypoop-plugin) DONE (2025-09-16)
 
 ---
 

@@ -5,19 +5,22 @@ Checklist viva per il refactor incrementale.
 ## Roadmap macro
 - [x] Baseline: creare file docs (decision-log, metrics, checklist, adr, questions)
 - [x] Tag `pre-refactor-baseline`
-- [ ] Migrazione iniziale Gradle (singolo modulo)
+- [x] Migrazione iniziale Gradle (singolo modulo)
   - [x] Gradle wrapper
   - [x] settings.gradle.kts
   - [x] build.gradle.kts (collega MyPoopPlugin src e resources)
   - [x] Espansione versione in plugin.yml (processResources)
   - [x] Build Gradle verde in parallelo a Maven
   - [ ] Valutare packaging/shading (rimandato a Shadow plugin in step successivi)
-- [ ] Tool qualità: Spotless, Checkstyle, JaCoCo
+- [x] Tool qualità: Spotless, Checkstyle, JaCoCo
   - [x] Aggiunto Spotless (enforcement disabilitato inizialmente)
   - [x] Aggiunto Checkstyle (ignoreFailures=true)
   - [x] Aggiunto JaCoCo (baseline, senza soglie)
   - [ ] Abilitare enforcement Spotless/Checkstyle gradualmente
-- [ ] Multi-modulo: `mypoop-core`, `mypoop-plugin`
+- [x] Multi-modulo: `mypoop-core`, `mypoop-plugin`
+  - [x] Root come aggregatore
+  - [x] Modulo `mypoop-core` vuoto (nessun import Bukkit)
+  - [x] Modulo `mypoop-plugin` compila dalle cartelle esistenti (MyPoopPlugin/src)
 - [ ] Estrarre primo servizio di dominio + primo test
 - [ ] Definire porte e adapter minimi
 - [ ] Refactor comandi (un file per comando, dispatcher)
