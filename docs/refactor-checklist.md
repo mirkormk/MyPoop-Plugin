@@ -21,7 +21,10 @@ Checklist viva per il refactor incrementale.
   - [x] Root come aggregatore
   - [x] Modulo `mypoop-core` vuoto (nessun import Bukkit)
   - [x] Modulo `mypoop-plugin` compila dalle cartelle esistenti (MyPoopPlugin/src)
-- [ ] Estrarre primo servizio di dominio + primo test
+- [x] Estrarre primo servizio di dominio + primo test
+  - [x] Servizio PoopRulesService nel core
+  - [x] Test JUnit su PoopRulesService
+  - [x] Report JaCoCo core
 - [ ] Definire porte e adapter minimi
 - [ ] Refactor comandi (un file per comando, dispatcher)
 - [ ] Listener snelli → delega a servizi core

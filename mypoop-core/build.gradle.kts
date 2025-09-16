@@ -1,5 +1,7 @@
 plugins {
     java
+    `java-library`
+    jacoco
 }
 
 group = "me.spighetto"
@@ -15,5 +17,21 @@ repositories {
     mavenCentral()
 }
 
-// Modulo core: nessuna dipendenza Bukkit/Paper
+dependencies {
+    testImplementation(platform("org.junit:junit-bom:5.10.3"))
+    testImplementation("org.junit.jupiter:junit-jupiter")
+}
 
+tasks.test {
+    useJUnitPlatform()
+}
+
+tasks.jacocoTestReport {
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+    }
+}
+
+// Modulo core: nessuna dipendenza Bukkit/Paper
