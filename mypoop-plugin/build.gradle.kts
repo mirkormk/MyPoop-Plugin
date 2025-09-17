@@ -38,12 +38,16 @@ dependencies {
 
 sourceSets {
     val main by getting {
-        java.setSrcDirs(listOf(
-            rootProject.file("MyPoopPlugin/src/main/java").path
-        ))
-        resources.setSrcDirs(listOf(
-            rootProject.file("MyPoopPlugin/src/main/resources").path
-        ))
+        java.setSrcDirs(
+            listOf(
+                rootProject.file("MyPoopPlugin/src/main/java").path,
+            ),
+        )
+        resources.setSrcDirs(
+            listOf(
+                rootProject.file("MyPoopPlugin/src/main/resources").path,
+            ),
+        )
     }
 }
 
@@ -71,7 +75,7 @@ spotless {
     java {
         googleJavaFormat("1.17.0")
         target(
-            rootProject.file("MyPoopPlugin/src").path + "/**/*.java"
+            rootProject.file("MyPoopPlugin/src").path + "/**/*.java",
         )
     }
     kotlinGradle {
@@ -90,4 +94,3 @@ jacoco { toolVersion = "0.8.10" }
 
 // Non bloccare build con i check di Spotless
 tasks.matching { it.name.startsWith("spotless") && it.name.endsWith("Check") }.configureEach { enabled = false }
-
