@@ -31,3 +31,10 @@ Questo file traccia le decisioni architetturali e di processo prese durante il r
 - Aggiunto PoopRulesService in `:mypoop-core` (stateless, puro Java).
 - Creati test JUnit con coverage 100% su questo servizio (report JaCoCo attivo).
 - Nessuna dipendenza Bukkit/Paper nel core.
+
+---
+
+## 2025-09-18: Policy linguistica (chat vs repository)
+- Chat operativa: Italiano (questo canale resta in italiano).
+- Artefatti repository (commit messages, PR titles/descriptions, commenti nel codice): Inglese.
+- Motivazione: coerenza e accessibilità per contributori open-source; separazione tra comunicazione operativa e storicizzazione tecnica.
