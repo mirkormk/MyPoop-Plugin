@@ -19,11 +19,22 @@ Questo file traccia le decisioni architetturali e di processo prese durante il r
 
 ---
 
-## 2025-09-10: Strumenti di qualità iniziali (non bloccanti)
-- Aggiunti Spotless, Checkstyle, JaCoCo.
-- Spotless enforcement disabilitato inizialmente (si userà spotlessApply manuale).
-- Checkstyle attivo con ignoreFailures=true; regole minime (tab, newline EOF).
-- JaCoCo configurato senza soglie (coverage report in seguito).
-- Obiettivo: introdurre standard senza rompere la build.
+## 2025-09-16: Gradle multi-modulo (mypoop-core + mypoop-plugin)
+- Root trasformato in aggregatore; aggiunti subprogetti `:mypoop-core` (vuoto, senza Bukkit) e `:mypoop-plugin` (compila codice esistente da MyPoopPlugin/src).
+- Build del modulo plugin verde; jar contiene plugin.yml e config.yml con versione espansa.
+- Strumenti qualità applicati al modulo plugin; enforcement Spotless disabilitato per ora.
+- Prossimi passi: estrarre primo servizio di dominio nel core, definire prime porte/adapters.
 
-Aggiungere nuove decisioni in ordine cronologico.
+---
+
+## 2025-09-16: Primo servizio di dominio nel core
+- Aggiunto PoopRulesService in `:mypoop-core` (stateless, puro Java).
+- Creati test JUnit con coverage 100% su questo servizio (report JaCoCo attivo).
+- Nessuna dipendenza Bukkit/Paper nel core.
+
+---
+
+## 2025-09-18: Policy linguistica (chat vs repository)
+- Chat operativa: Italiano (questo canale resta in italiano).
+- Artefatti repository (commit messages, PR titles/descriptions, commenti nel codice): Inglese.
+- Motivazione: coerenza e accessibilità per contributori open-source; separazione tra comunicazione operativa e storicizzazione tecnica.
