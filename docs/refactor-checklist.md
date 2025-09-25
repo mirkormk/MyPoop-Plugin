@@ -28,9 +28,10 @@ Checklist viva per il refactor incrementale.
 - [ ] Definire porte e adapter minimi
   - [x] Porta PlayerMessagingPort nel core
   - [x] Adapter BukkitPlayerMessagingAdapter nel plugin
-  - [ ] Wiring: inizializzare l'adapter nel bootstrap del plugin e fornirlo ai servizi core
+  - [x] Wiring: inizializzare l'adapter nel bootstrap del plugin e fornirlo ai servizi core
   - [ ] Definire porta per configurazione (ConfigPort) e relativo adapter Bukkit/file
   - [ ] Definire porta per logging (LoggingPort) e relativo adapter Bukkit/SLF4J
+  - [ ] Sostituire reflection provvisoria con strategia definitiva (migrazione Paper + riduzione NMS / submoduli Gradle)
 - [ ] Refactor comandi (un file per comando, dispatcher)
   - [ ] Mappare comandi esistenti e output
   - [ ] Introdurre CommandDispatcher e classi per comando

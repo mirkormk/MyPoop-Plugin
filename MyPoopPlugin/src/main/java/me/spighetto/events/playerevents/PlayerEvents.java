@@ -2,6 +2,7 @@ package me.spighetto.events.playerevents;
 
 import me.spighetto.events.fertilizerevent.Fertilizer;
 import me.spighetto.mypoop.MyPoop;
+import me.spighetto.mypoop.core.port.PlayerMessagingPort;
 import me.spighetto.mypoopversionsinterfaces.IMessages;
 import me.spighetto.mypoopversionsinterfaces.IPoop;
 import org.bukkit.ChatColor;
@@ -19,9 +20,11 @@ import java.lang.reflect.Constructor;
 
 public class PlayerEvents implements Listener {
     private final MyPoop plugin;
+    private final PlayerMessagingPort messagingPort;
 
-    public PlayerEvents(MyPoop plugin){
+    public PlayerEvents(MyPoop plugin, PlayerMessagingPort messagingPort){
         this.plugin = plugin;
+        this.messagingPort = messagingPort;
     }
 
     @EventHandler
@@ -96,7 +99,8 @@ public class PlayerEvents implements Listener {
     public void printMessage(Player player, String msg) {
         IMessages message = createMessagesForVersion(player, msg);
         if (message == null) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
+            // Usa la porta di messaggistica come fallback
+            messagingPort.sendTo(player.getUniqueId(), ChatColor.translateAlternateColorCodes('&', msg));
             return;
         }
 
@@ -111,7 +115,7 @@ public class PlayerEvents implements Listener {
                 message.printActionBar();
                 break;
             default:
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
+                messagingPort.sendTo(player.getUniqueId(), ChatColor.translateAlternateColorCodes('&', msg));
                 break;
         }
     }
