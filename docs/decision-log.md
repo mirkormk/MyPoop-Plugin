@@ -38,3 +38,11 @@ Questo file traccia le decisioni architetturali e di processo prese durante il r
 - Chat operativa: Italiano (questo canale resta in italiano).
 - Artefatti repository (commit messages, PR titles/descriptions, commenti nel codice): Inglese.
 - Motivazione: coerenza e accessibilità per contributori open-source; separazione tra comunicazione operativa e storicizzazione tecnica.
+
+---
+
+## 2025-09-24: Repo hygiene (rimozione artefatti compilati; enforcement .gitignore)
+- Rimossi dal VCS artefatti di build storicamente tracciati (cartelle `target/` e `.class`).
+- Confermata configurazione `.gitignore` per ignorare: `**/target/`, `**/build/`, `.gradle/`, `.idea/`, `*.iml`, `*.log`, `out/`.
+- Effetto: working tree pulito dopo build; ridotta confusione nei diff e nei branch. Nessun impatto sui sorgenti.
+- Raccomandazione: abilitare "Automatically delete head branches" su GitHub per evitare branch remoti obsoleti dopo merge.

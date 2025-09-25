@@ -1,4 +1,0 @@
-name: MyPoopApi
-version: ${project.version}
-main: me.spighetto.mypoopapi.Wrapper
-api-version: 1.13
