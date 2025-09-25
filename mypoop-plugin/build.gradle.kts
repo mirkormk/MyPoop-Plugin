@@ -27,24 +27,21 @@ dependencies {
 
     compileOnly("org.spigotmc:spigot-api:1.19.4-R0.1-SNAPSHOT")
     compileOnly("javax.validation:validation-api:1.1.0.Final")
-
-    // Dipendenze locali pre-compilate (Maven non disponibile qui):
-    compileOnly(files(rootProject.file("VersionsInterfaces/target/classes")))
-    compileOnly(files(rootProject.file("v1_8/target/classes")))
-    compileOnly(files(rootProject.file("v1_11/target/classes")))
-    compileOnly(files(rootProject.file("v1_13/target/classes")))
-    compileOnly(files(rootProject.file("v1_19_4/target/classes")))
 }
 
 sourceSets {
     val main by getting {
         java.setSrcDirs(
             listOf(
+                // Sorgenti del plugin
                 rootProject.file("MyPoopPlugin/src/main/java").path,
+                // Forniamo IPoop/IMessages a compile-time
+                rootProject.file("VersionsInterfaces/src/main/java").path,
             ),
         )
         resources.setSrcDirs(
             listOf(
+                // Solo le risorse del plugin (evito duplicati di plugin.yml)
                 rootProject.file("MyPoopPlugin/src/main/resources").path,
             ),
         )
@@ -56,16 +53,10 @@ tasks.named<ProcessResources>("processResources") {
     filesMatching("plugin.yml") { expand("project" to project) }
 }
 
-// Packaging: includi classi dei moduli locali (me/**) per simulare shading
+// Packaging: solo classi del plugin (niente moduli NMS per ora)
 tasks.named<Jar>("jar") {
     archiveFileName.set("MyPoop.jar")
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-
-    from(rootProject.file("VersionsInterfaces/target/classes")) { include("me/**") }
-    from(rootProject.file("v1_8/target/classes")) { include("me/**") }
-    from(rootProject.file("v1_11/target/classes")) { include("me/**") }
-    from(rootProject.file("v1_13/target/classes")) { include("me/**") }
-    from(rootProject.file("v1_19_4/target/classes")) { include("me/**") }
 }
 
 // ----------------------

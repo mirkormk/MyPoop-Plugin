@@ -46,3 +46,11 @@ Questo file traccia le decisioni architetturali e di processo prese durante il r
 - Confermata configurazione `.gitignore` per ignorare: `**/target/`, `**/build/`, `.gradle/`, `.idea/`, `*.iml`, `*.log`, `out/`.
 - Effetto: working tree pulito dopo build; ridotta confusione nei diff e nei branch. Nessun impatto sui sorgenti.
 - Raccomandazione: abilitare "Automatically delete head branches" su GitHub per evitare branch remoti obsoleti dopo merge.
+
+---
+
+## 2025-09-25: Prime porte e adapter (Hexagonal)
+- Introdotta porta `PlayerMessagingPort` in `:mypoop-core` (nessun import Bukkit/Paper).
+- Creato adapter `BukkitPlayerMessagingAdapter` in `:mypoop-plugin` che implementa la porta usando Bukkit API.
+- Formalizzati ADR 001 (Hexagonal) e ADR 002 (confini moduli).
+- Prossimi passi: wiring dell’adapter nel plugin bootstrap; definire ulteriori porte per I/O e comandi.

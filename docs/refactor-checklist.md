@@ -26,8 +26,18 @@ Checklist viva per il refactor incrementale.
   - [x] Test JUnit su PoopRulesService
   - [x] Report JaCoCo core
 - [ ] Definire porte e adapter minimi
+  - [x] Porta PlayerMessagingPort nel core
+  - [x] Adapter BukkitPlayerMessagingAdapter nel plugin
+  - [ ] Wiring: inizializzare l'adapter nel bootstrap del plugin e fornirlo ai servizi core
+  - [ ] Definire porta per configurazione (ConfigPort) e relativo adapter Bukkit/file
+  - [ ] Definire porta per logging (LoggingPort) e relativo adapter Bukkit/SLF4J
 - [ ] Refactor comandi (un file per comando, dispatcher)
+  - [ ] Mappare comandi esistenti e output
+  - [ ] Introdurre CommandDispatcher e classi per comando
+  - [ ] Delegare la logica al core (via porte)
 - [ ] Listener snelli → delega a servizi core
+  - [ ] Inventariare listener
+  - [ ] Estrarre logica > 30 righe in servizi core
 - [ ] Migrazione a Paper API (nuova ADR)
 - [ ] Introduzione Adventure + catalogo messaggi centralizzato
 - [ ] Persistenza astratta (in-memory + file)

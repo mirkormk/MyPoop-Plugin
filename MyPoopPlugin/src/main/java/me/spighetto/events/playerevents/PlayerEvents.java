@@ -2,11 +2,6 @@ package me.spighetto.events.playerevents;
 
 import me.spighetto.events.fertilizerevent.Fertilizer;
 import me.spighetto.mypoop.MyPoop;
-import me.spighetto.mypoopv1_11.Messages_v1_11;
-import me.spighetto.mypoopv1_13.Poop_v1_13;
-import me.spighetto.mypoopv1_19_4.MyPoop_v1_19_4;
-import me.spighetto.mypoopv1_8.Messages_v1_8;
-import me.spighetto.mypoopv1_8.Poop_v1_8;
 import me.spighetto.mypoopversionsinterfaces.IMessages;
 import me.spighetto.mypoopversionsinterfaces.IPoop;
 import org.bukkit.ChatColor;
@@ -19,6 +14,8 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
+
+import java.lang.reflect.Constructor;
 
 public class PlayerEvents implements Listener {
     private final MyPoop plugin;
@@ -34,16 +31,8 @@ public class PlayerEvents implements Listener {
         if (plugin.playersLevelFood.containsKey(player.getUniqueId())) {
             if (isPlayerFoodTrigger(player)) {
                 if (player.isSneaking()) {
-                    IPoop poop;
-
-                    if(plugin.serverVersion >= 8 && plugin.serverVersion <= 11) {
-                        poop = new Poop_v1_8(player);
-                    } else if (plugin.serverVersion >= 12 && plugin.serverVersion <= 18) {
-                        poop = new Poop_v1_13(player);
-                    } else if (plugin.serverVersion == 19) {
-                        poop = new MyPoop_v1_19_4(player);
-                    }
-                    else {
+                    IPoop poop = createPoopForVersion(player);
+                    if (poop == null) {
                         return;
                     }
 
@@ -105,13 +94,9 @@ public class PlayerEvents implements Listener {
     }
 
     public void printMessage(Player player, String msg) {
-        IMessages message;
-
-        if(plugin.serverVersion >= 8 && plugin.serverVersion <= 11) {
-             message = new Messages_v1_8(player, msg);
-        } else if (plugin.serverVersion >= 11 && plugin.serverVersion <= 19) {
-            message = new Messages_v1_11(player, msg);
-        } else {
+        IMessages message = createMessagesForVersion(player, msg);
+        if (message == null) {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', msg));
             return;
         }
 
@@ -136,5 +121,45 @@ public class PlayerEvents implements Listener {
     }
     private boolean isPlayerFoodLimit(Player player){
         return plugin.playersLevelFood.get(player.getUniqueId()) >= plugin.getPoopConfig().getLimit();
+    }
+
+    private IPoop createPoopForVersion(Player player) {
+        try {
+            final String className;
+            if (plugin.serverVersion >= 8 && plugin.serverVersion <= 11) {
+                className = "me.spighetto.mypoopv1_8.Poop_v1_8";
+            } else if (plugin.serverVersion >= 12 && plugin.serverVersion <= 18) {
+                className = "me.spighetto.mypoopv1_13.Poop_v1_13";
+            } else if (plugin.serverVersion == 19) {
+                className = "me.spighetto.mypoopv1_19_4.MyPoop_v1_19_4";
+            } else {
+                return null;
+            }
+            Class<?> clazz = Class.forName(className);
+            Constructor<?> ctor = clazz.getConstructor(Player.class);
+            Object instance = ctor.newInstance(player);
+            return (IPoop) instance;
+        } catch (Throwable t) {
+            return null;
+        }
+    }
+
+    private IMessages createMessagesForVersion(Player player, String msg) {
+        try {
+            final String className;
+            if (plugin.serverVersion >= 8 && plugin.serverVersion <= 11) {
+                className = "me.spighetto.mypoopv1_8.Messages_v1_8";
+            } else if (plugin.serverVersion >= 11 && plugin.serverVersion <= 19) {
+                className = "me.spighetto.mypoopv1_11.Messages_v1_11";
+            } else {
+                return null;
+            }
+            Class<?> clazz = Class.forName(className);
+            Constructor<?> ctor = clazz.getConstructor(Player.class, String.class);
+            Object instance = ctor.newInstance(player, msg);
+            return (IMessages) instance;
+        } catch (Throwable t) {
+            return null;
+        }
     }
 }
