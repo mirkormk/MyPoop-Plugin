@@ -5,6 +5,7 @@ import me.spighetto.mypoop.MyPoop;
 import me.spighetto.mypoop.core.port.PlayerMessagingPort;
 import me.spighetto.mypoopversionsinterfaces.IMessages;
 import me.spighetto.mypoopversionsinterfaces.IPoop;
+import me.spighetto.mypoop.version.VersionCapabilities;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -21,10 +22,12 @@ import java.lang.reflect.Constructor;
 public class PlayerEvents implements Listener {
     private final MyPoop plugin;
     private final PlayerMessagingPort messagingPort;
+    private final VersionCapabilities versionCapabilities;
 
-    public PlayerEvents(MyPoop plugin, PlayerMessagingPort messagingPort){
+    public PlayerEvents(MyPoop plugin, PlayerMessagingPort messagingPort, VersionCapabilities versionCapabilities){
         this.plugin = plugin;
         this.messagingPort = messagingPort;
+        this.versionCapabilities = versionCapabilities;
     }
 
     @EventHandler
@@ -97,27 +100,45 @@ public class PlayerEvents implements Listener {
     }
 
     public void printMessage(Player player, String msg) {
-        IMessages message = createMessagesForVersion(player, msg);
-        if (message == null) {
-            // Usa la porta di messaggistica come fallback
-            messagingPort.sendTo(player.getUniqueId(), ChatColor.translateAlternateColorCodes('&', msg));
+        int where = plugin.getPoopConfig().getWherePrint();
+        String colored = ChatColor.translateAlternateColorCodes('&', msg);
+
+        if (where == 2 && versionCapabilities.supportsTitles()) {
+            versionCapabilities.sendTitle(player, msg);
+            return;
+        }
+        if (where == 3 && versionCapabilities.supportsTitles()) {
+            versionCapabilities.sendSubtitle(player, msg);
+            return;
+        }
+        if (where == 4 && versionCapabilities.supportsActionBar()) {
+            // al momento non supportato: cadrà nel fallback sotto
+        } else if (where == 4) {
+            // Fallback: chat
+            messagingPort.sendTo(player.getUniqueId(), colored);
             return;
         }
 
-        switch (plugin.getPoopConfig().getWherePrint()) {
-            case 2:
-                message.sendTitle();
-                break;
-            case 3:
-                message.sendSubtitle();
-                break;
-            case 4:
-                message.printActionBar();
-                break;
-            default:
-                messagingPort.sendTo(player.getUniqueId(), ChatColor.translateAlternateColorCodes('&', msg));
-                break;
+        // Fallback legacy: reflection su IMessages (per vecchie versioni)
+        IMessages message = createMessagesForVersion(player, msg);
+        if (message != null) {
+            switch (where) {
+                case 2:
+                    message.sendTitle();
+                    return;
+                case 3:
+                    message.sendSubtitle();
+                    return;
+                case 4:
+                    message.printActionBar();
+                    return;
+                default:
+                    break;
+            }
         }
+
+        // Fallback finale: chat via porta
+        messagingPort.sendTo(player.getUniqueId(), colored);
     }
 
     private boolean isPlayerFoodTrigger(Player player){
