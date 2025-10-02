@@ -111,10 +111,8 @@ public class PlayerEvents implements Listener {
             versionCapabilities.sendSubtitle(player, msg);
             return;
         }
-        if (where == 4 && versionCapabilities.supportsActionBar()) {
-            // al momento non supportato: cadrà nel fallback sotto
-        } else if (where == 4) {
-            // Fallback: chat
+        if (where == 4) {
+            // Per ora niente action bar senza dipendenze extra: fallback via chat
             messagingPort.sendTo(player.getUniqueId(), colored);
             return;
         }
