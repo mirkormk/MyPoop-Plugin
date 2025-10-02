@@ -1,8 +1,12 @@
 package me.spighetto.mypoop;
 
-public class PoopConfig {
+/**
+ * Immutable configuration holder for MyPoop plugin.
+ * All values are final and validated in the constructor.
+ */
+public final class PoopConfig {
     private final int trigger;
-    private int limit;
+    private final int limit;
     private final long delay;
     private final Boolean namedPoop;
     private final String colorPoopName;
@@ -10,9 +14,9 @@ public class PoopConfig {
     private final String message;
     private final String messageAtLimit;
     private final int wherePrint;
-    private Boolean allCropsNearby;
-    private double radius;
-    private Boolean randomGrow;
+    private final Boolean allCropsNearby;
+    private final double radius;
+    private final Boolean randomGrow;
 
     public PoopConfig(
             int trigger,
@@ -29,7 +33,8 @@ public class PoopConfig {
             boolean randomGrow
     ){
         this.trigger = trigger;
-        this.limit = limit;
+        // Validation: limit must be >= trigger
+        this.limit = Math.max(limit, trigger);
         this.delay = delay;
         this.namedPoop = namedPoop;
         this.colorPoopName = colorPoopName;
@@ -48,9 +53,6 @@ public class PoopConfig {
 
     public int getLimit(){
         return limit;
-    }
-    public void setLimit(int limit){
-        this.limit = limit;
     }
 
     public long getDelay(){

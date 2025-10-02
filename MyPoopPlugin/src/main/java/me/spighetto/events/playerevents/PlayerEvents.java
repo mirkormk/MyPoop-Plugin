@@ -1,6 +1,7 @@
 package me.spighetto.events.playerevents;
 
 import me.spighetto.events.fertilizerevent.Fertilizer;
+import me.spighetto.mypoop.Constants;
 import me.spighetto.mypoop.MyPoop;
 import me.spighetto.mypoop.core.port.PlayerMessagingPort;
 import me.spighetto.mypoopversionsinterfaces.IMessages;
@@ -103,15 +104,15 @@ public class PlayerEvents implements Listener {
         int where = plugin.getPoopConfig().getWherePrint();
         String colored = ChatColor.translateAlternateColorCodes('&', msg);
 
-        if (where == 2 && versionCapabilities.supportsTitles()) {
+        if (where == Constants.MESSAGE_LOCATION_TITLE && versionCapabilities.supportsTitles()) {
             versionCapabilities.sendTitle(player, msg);
             return;
         }
-        if (where == 3 && versionCapabilities.supportsTitles()) {
+        if (where == Constants.MESSAGE_LOCATION_SUBTITLE && versionCapabilities.supportsTitles()) {
             versionCapabilities.sendSubtitle(player, msg);
             return;
         }
-        if (where == 4) {
+        if (where == Constants.MESSAGE_LOCATION_ACTIONBAR) {
             // Per ora niente action bar senza dipendenze extra: fallback via chat
             messagingPort.sendTo(player.getUniqueId(), colored);
             return;
@@ -121,13 +122,13 @@ public class PlayerEvents implements Listener {
         IMessages message = createMessagesForVersion(player, msg);
         if (message != null) {
             switch (where) {
-                case 2:
+                case Constants.MESSAGE_LOCATION_TITLE:
                     message.sendTitle();
                     return;
-                case 3:
+                case Constants.MESSAGE_LOCATION_SUBTITLE:
                     message.sendSubtitle();
                     return;
-                case 4:
+                case Constants.MESSAGE_LOCATION_ACTIONBAR:
                     message.printActionBar();
                     return;
                 default:
@@ -149,11 +150,13 @@ public class PlayerEvents implements Listener {
     private IPoop createPoopForVersion(Player player) {
         try {
             final String className;
-            if (plugin.serverVersion >= 8 && plugin.serverVersion <= 11) {
+            if (plugin.serverVersion >= Constants.MIN_VERSION_NMS_1_8 
+                    && plugin.serverVersion <= Constants.MAX_VERSION_NMS_1_11) {
                 className = "me.spighetto.mypoopv1_8.Poop_v1_8";
-            } else if (plugin.serverVersion >= 12 && plugin.serverVersion <= 18) {
+            } else if (plugin.serverVersion >= Constants.MIN_VERSION_MODERN_API_1_12 
+                    && plugin.serverVersion <= Constants.MAX_VERSION_MODERN_API_1_18) {
                 className = "me.spighetto.mypoopv1_13.Poop_v1_13";
-            } else if (plugin.serverVersion == 19) {
+            } else if (plugin.serverVersion == Constants.VERSION_1_19) {
                 className = "me.spighetto.mypoopv1_19_4.MyPoop_v1_19_4";
             } else {
                 return null;
@@ -170,9 +173,11 @@ public class PlayerEvents implements Listener {
     private IMessages createMessagesForVersion(Player player, String msg) {
         try {
             final String className;
-            if (plugin.serverVersion >= 8 && plugin.serverVersion <= 11) {
+            if (plugin.serverVersion >= Constants.MIN_VERSION_NMS_1_8 
+                    && plugin.serverVersion <= Constants.MAX_VERSION_NMS_1_11) {
                 className = "me.spighetto.mypoopv1_8.Messages_v1_8";
-            } else if (plugin.serverVersion >= 11 && plugin.serverVersion <= 19) {
+            } else if (plugin.serverVersion >= Constants.MAX_VERSION_NMS_1_11 
+                    && plugin.serverVersion <= Constants.VERSION_1_19) {
                 className = "me.spighetto.mypoopv1_11.Messages_v1_11";
             } else {
                 return null;
