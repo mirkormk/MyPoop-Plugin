@@ -46,3 +46,19 @@ Questo file traccia le decisioni architetturali e di processo prese durante il r
 - Confermata configurazione `.gitignore` per ignorare: `**/target/`, `**/build/`, `.gradle/`, `.idea/`, `*.iml`, `*.log`, `out/`.
 - Effetto: working tree pulito dopo build; ridotta confusione nei diff e nei branch. Nessun impatto sui sorgenti.
 - Raccomandazione: abilitare "Automatically delete head branches" su GitHub per evitare branch remoti obsoleti dopo merge.
+
+---
+
+## 2025-09-25: Prime porte e adapter (Hexagonal)
+- Introdotta porta `PlayerMessagingPort` in `:mypoop-core` (nessun import Bukkit/Paper).
+- Creato adapter `BukkitPlayerMessagingAdapter` in `:mypoop-plugin` che implementa la porta usando Bukkit API.
+- Formalizzati ADR 001 (Hexagonal) e ADR 002 (confini moduli).
+- Prossimi passi: wiring dell’adapter nel plugin bootstrap; definire ulteriori porte per I/O e comandi.
+
+---
+
+## 2025-09-25: Porte Config/Logging, wiring e ponte temporaneo via reflection
+- Aggiunte porte `ConfigPort` e `LoggingPort` nel core; creati adapter Bukkit corrispondenti nel plugin.
+- Wiring: istanziato `BukkitPlayerMessagingAdapter` e passato a `PlayerEvents` come fallback centralizzato.
+- Decoupling: rimosse dipendenze compile-time dai moduli NMS; `PlayerEvents` istanzia classi per-versione via reflection come ponte temporaneo.
+- ADR proposti: 003 Migrazione a Paper (primary API), 004 Adozione Adventure per messaggistica unificata.
