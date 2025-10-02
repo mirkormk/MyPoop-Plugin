@@ -117,7 +117,7 @@ public final class MyPoop extends JavaPlugin {
         return serverVersion >= 8 && serverVersion <= 19;
     }
 
-    private void readConfigs() {
+    public void readConfigs() {
 
         try {
             config = new PoopConfig(
