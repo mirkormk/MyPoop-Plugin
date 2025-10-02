@@ -7,4 +7,9 @@ description: This plugin allows players to poop
 commands:
   mypoop:
     description: General command for MyPoop plugin
+    usage: /mypoop <reload>
     aliases: [myp]
+permissions:
+  mypoop.reload:
+    description: Allows reloading the plugin configuration
+    default: op

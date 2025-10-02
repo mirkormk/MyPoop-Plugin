@@ -7,6 +7,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
 import javax.validation.constraints.NotNull;
+import java.util.logging.Level;
 
 public class Reload implements CommandExecutor{
 
@@ -19,31 +20,62 @@ public class Reload implements CommandExecutor{
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String nome, @NotNull String[] args) {
         
-        if(cmd.getName().equalsIgnoreCase("mypoop")) {
-            if(args.length == 0) {
-                return false;
-            } else if(args[0].equalsIgnoreCase("reload")) {
-                
-                plugin.deletePoops();
-                
-                try {
-                    onReload();
-                } catch(Exception e) {
-                    System.out.println(e.getMessage());
-                }
-                sender.sendMessage(ChatColor.GREEN + "MyPoop: Reload complete");                
-            } else {
-                sender.sendMessage(ChatColor.RED + "MyPoop: Unknown command");
-            }
+        if(!cmd.getName().equalsIgnoreCase("mypoop")) {
+            return false;
         }
-
-        return false;
+        
+        if(args.length == 0) {
+            sender.sendMessage(ChatColor.RED + "Usage: /mypoop reload");
+            return true;
+        }
+        
+        if(!args[0].equalsIgnoreCase("reload")) {
+            sender.sendMessage(ChatColor.RED + "Unknown subcommand: " + args[0]);
+            sender.sendMessage(ChatColor.YELLOW + "Usage: /mypoop reload");
+            return true;
+        }
+        
+        // Permission check (if configured in plugin.yml)
+        if(!sender.hasPermission("mypoop.reload")) {
+            sender.sendMessage(ChatColor.RED + "You don't have permission to reload MyPoop");
+            return true;
+        }
+        
+        // Execute safe reload
+        try {
+            safeReload();
+            sender.sendMessage(ChatColor.GREEN + "MyPoop configuration reloaded successfully");
+            plugin.getLogger().info("Configuration reloaded by " + sender.getName());
+        } catch(Exception e) {
+            sender.sendMessage(ChatColor.RED + "Failed to reload MyPoop: " + e.getMessage());
+            plugin.getLogger().log(Level.SEVERE, "Failed to reload plugin configuration", e);
+        }
+        
+        return true;
     }
 
-    public void onReload() {
+    /**
+     * Performs a safe reload without disabling/enabling the plugin.
+     * Only reloads configuration and clears runtime caches.
+     * 
+     * CRITICAL: Never use disablePlugin()/enablePlugin() as it causes:
+     * - Memory leaks
+     * - ClassLoader issues
+     * - Corrupted plugin state
+     * - Server crashes
+     */
+    private void safeReload() {
+        // 1. Clear existing poops
+        plugin.deletePoops();
+        
+        // 2. Clear player food levels cache
+        plugin.playersLevelFood.clear();
+        
+        // 3. Reload configuration from disk
         plugin.reloadConfig();
-        plugin.getServer().getPluginManager().disablePlugin(plugin);
-        plugin.getServer().getPluginManager().enablePlugin(plugin);
+        
+        // 4. Re-parse config values into PoopConfig wrapper
+        plugin.readConfigs();
     }
 
 }
