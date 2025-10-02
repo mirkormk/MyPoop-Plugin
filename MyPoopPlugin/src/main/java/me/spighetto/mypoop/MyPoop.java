@@ -81,7 +81,7 @@ public final class MyPoop extends JavaPlugin {
 
             this.listPoops.clear();
 
-            en.forEach(Entity::remove);		// Method reference technique
+            en.forEach(Entity::remove);        // Method reference technique
         }
     }
 
