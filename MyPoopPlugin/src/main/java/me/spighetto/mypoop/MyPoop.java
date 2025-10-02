@@ -12,6 +12,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import me.spighetto.mypoop.adapter.messaging.BukkitPlayerMessagingAdapter;
 import me.spighetto.mypoop.adapter.logging.BukkitLoggingAdapter;
 import me.spighetto.mypoop.adapter.config.BukkitConfigAdapter;
@@ -19,11 +20,13 @@ import me.spighetto.mypoop.core.port.PlayerMessagingPort;
 import me.spighetto.mypoop.core.port.LoggingPort;
 import me.spighetto.mypoop.core.port.ConfigPort;
 import me.spighetto.mypoop.version.VersionCapabilities;
+import java.util.logging.Level;
 
 public final class MyPoop extends JavaPlugin {
-    public Map<UUID, Integer> playersLevelFood = new HashMap<>();
+    // Thread-safe collections for concurrent access from async schedulers and event handlers
+    public final Map<UUID, Integer> playersLevelFood = new ConcurrentHashMap<>();
     private PoopConfig config;
-    public ArrayList<UUID> listPoops = new ArrayList<>();
+    public final Set<UUID> listPoops = ConcurrentHashMap.newKeySet();
     public int serverVersion;
 
     // Porte/adapters
@@ -89,7 +92,7 @@ public final class MyPoop extends JavaPlugin {
         try {
             return Integer.parseInt(Bukkit.getBukkitVersion().split("-")[0].split("\\.")[1]);
         } catch (Exception e){
-            Log("Error: the server version could not be verified or incorrect server version");
+            getLogger().log(Level.SEVERE, "Failed to parse server version from: " + Bukkit.getBukkitVersion(), e);
             return -1;
         }
     }
@@ -140,17 +143,14 @@ public final class MyPoop extends JavaPlugin {
             }
 
         } catch (Exception e) {
-            Log("Error: some value inside the config.yml has not been configured correctly. " +
-                    "\n\t\tTip: save a copy of your current config.yml, delete from MyPoop's folder and reload the plugin to regenerate it as default. " +
-                    "Finally pay attention to recopy your saved values to the new config.yml");
+            getLogger().log(Level.SEVERE, 
+                "Error: some value inside the config.yml has not been configured correctly. " +
+                "Tip: save a copy of your current config.yml, delete from MyPoop's folder and reload the plugin to regenerate it as default. " +
+                "Finally pay attention to recopy your saved values to the new config.yml", e);
         }
     }
 
     public PoopConfig getPoopConfig(){
         return config;
-    }
-
-    public void Log(String text) {
-        Bukkit.getConsoleSender().sendMessage("MyPoop: " + text);
     }
 }
