@@ -137,10 +137,7 @@ public final class MyPoop extends JavaPlugin {
                     this.getConfig().getDouble("growingSettings.radius"),
                     this.getConfig().getBoolean("growingSettings.randomGrow")
             );
-
-            if(config.getLimit() < config.getTrigger()){
-                config.setLimit(config.getTrigger());
-            }
+            // Note: validation (limit >= trigger) is now handled in PoopConfig constructor
 
         } catch (Exception e) {
             getLogger().log(Level.SEVERE, 
