@@ -1,6 +1,7 @@
 package me.spighetto.mypoop;
 
-import me.spighetto.commands.Reload;
+import me.spighetto.commands.CommandDispatcher;
+import me.spighetto.commands.ReloadCommand;
 import me.spighetto.events.playerevents.PlayerEvents;
 import me.spighetto.mypoopversionsinterfaces.IPoop;
 import me.spighetto.stats.Metrics;
@@ -56,7 +57,10 @@ public final class MyPoop extends JavaPlugin {
         super.getServer().getPluginManager().registerEvents(new PlayerEvents(this, messagingPort, versionCapabilities), this);
         new Metrics(this, 8159);
 
-        Objects.requireNonNull(getCommand("mypoop")).setExecutor(new Reload(this));
+        // Setup command dispatcher
+        CommandDispatcher commandDispatcher = new CommandDispatcher();
+        commandDispatcher.registerCommand(new ReloadCommand(this));
+        Objects.requireNonNull(getCommand("mypoop")).setExecutor(commandDispatcher);
 
         if (this.getConfig().getBoolean("updateChecker")) {
             new UpdateChecker(this, 77372, "MyPoop");
