@@ -4,6 +4,8 @@ import me.spighetto.events.fertilizerevent.Fertilizer;
 import me.spighetto.mypoop.Constants;
 import me.spighetto.mypoop.MyPoop;
 import me.spighetto.mypoop.core.port.PlayerMessagingPort;
+import me.spighetto.mypoop.factory.MessagesFactory;
+import me.spighetto.mypoop.factory.PoopFactory;
 import me.spighetto.mypoopversionsinterfaces.IMessages;
 import me.spighetto.mypoopversionsinterfaces.IPoop;
 import me.spighetto.mypoop.version.VersionCapabilities;
@@ -17,8 +19,6 @@ import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
-
-import java.lang.reflect.Constructor;
 
 public class PlayerEvents implements Listener {
     private final MyPoop plugin;
@@ -143,50 +143,25 @@ public class PlayerEvents implements Listener {
     private boolean isPlayerFoodTrigger(Player player){
         return plugin.playersLevelFood.get(player.getUniqueId()) >= plugin.getPoopConfig().getTrigger();
     }
+
     private boolean isPlayerFoodLimit(Player player){
         return plugin.playersLevelFood.get(player.getUniqueId()) >= plugin.getPoopConfig().getLimit();
     }
 
     private IPoop createPoopForVersion(Player player) {
         try {
-            final String className;
-            if (plugin.serverVersion >= Constants.MIN_VERSION_NMS_1_8 
-                    && plugin.serverVersion <= Constants.MAX_VERSION_NMS_1_11) {
-                className = "me.spighetto.mypoopv1_8.Poop_v1_8";
-            } else if (plugin.serverVersion >= Constants.MIN_VERSION_MODERN_API_1_12 
-                    && plugin.serverVersion <= Constants.MAX_VERSION_MODERN_API_1_18) {
-                className = "me.spighetto.mypoopv1_13.Poop_v1_13";
-            } else if (plugin.serverVersion == Constants.VERSION_1_19) {
-                className = "me.spighetto.mypoopv1_19_4.MyPoop_v1_19_4";
-            } else {
-                return null;
-            }
-            Class<?> clazz = Class.forName(className);
-            Constructor<?> ctor = clazz.getConstructor(Player.class);
-            Object instance = ctor.newInstance(player);
-            return (IPoop) instance;
-        } catch (Throwable t) {
+            return PoopFactory.createPoop(player, plugin.serverVersion);
+        } catch (PoopFactory.UnsupportedVersionException e) {
+            plugin.getLogger().severe("Failed to create poop for player " + player.getName() + ": " + e.getMessage());
             return null;
         }
     }
 
     private IMessages createMessagesForVersion(Player player, String msg) {
         try {
-            final String className;
-            if (plugin.serverVersion >= Constants.MIN_VERSION_NMS_1_8 
-                    && plugin.serverVersion <= Constants.MAX_VERSION_NMS_1_11) {
-                className = "me.spighetto.mypoopv1_8.Messages_v1_8";
-            } else if (plugin.serverVersion >= Constants.MAX_VERSION_NMS_1_11 
-                    && plugin.serverVersion <= Constants.VERSION_1_19) {
-                className = "me.spighetto.mypoopv1_11.Messages_v1_11";
-            } else {
-                return null;
-            }
-            Class<?> clazz = Class.forName(className);
-            Constructor<?> ctor = clazz.getConstructor(Player.class, String.class);
-            Object instance = ctor.newInstance(player, msg);
-            return (IMessages) instance;
-        } catch (Throwable t) {
+            return MessagesFactory.createMessages(player, msg, plugin.serverVersion);
+        } catch (MessagesFactory.UnsupportedVersionException e) {
+            plugin.getLogger().warning("Failed to create messages for player " + player.getName() + ": " + e.getMessage());
             return null;
         }
     }
