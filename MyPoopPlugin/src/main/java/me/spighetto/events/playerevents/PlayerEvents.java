@@ -43,7 +43,8 @@ public class PlayerEvents implements Listener {
                         return;
                     }
 
-                    Fertilizer fertilizer = new Fertilizer(plugin, player);
+                    // Trigger fertilization effect (executed in constructor)
+                    new Fertilizer(plugin, player);
 
                     if (plugin.getPoopConfig().getNamedPoop()) {
                         poop.setName(player.getName(), plugin.getPoopConfig().getColorPoopName());
@@ -60,9 +61,7 @@ public class PlayerEvents implements Listener {
 
     @EventHandler
     public void onFoodChange(FoodLevelChangeEvent event) {
-        if (event.getEntity() instanceof Player) {
-
-            Player player = (Player) event.getEntity();
+        if (event.getEntity() instanceof Player player) {
 
             if (!plugin.playersLevelFood.containsKey(player.getUniqueId()))
                 plugin.playersLevelFood.put(player.getUniqueId(), 0);
@@ -93,11 +92,12 @@ public class PlayerEvents implements Listener {
 
     @EventHandler
     public void checkCanEatCake(PlayerInteractEvent event) {
-        if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK))
-            if (event.getClickedBlock().getType().equals(Material.CAKE))
-                if (isPlayerFoodLimit(event.getPlayer()))
-                    event.setCancelled(true);
-
+        if (event.getAction().equals(Action.RIGHT_CLICK_BLOCK)
+                && event.getClickedBlock() != null
+                && event.getClickedBlock().getType().equals(Material.CAKE)
+                && isPlayerFoodLimit(event.getPlayer())) {
+            event.setCancelled(true);
+        }
     }
 
     public void printMessage(Player player, String msg) {
@@ -113,12 +113,12 @@ public class PlayerEvents implements Listener {
             return;
         }
         if (where == Constants.MESSAGE_LOCATION_ACTIONBAR) {
-            // Per ora niente action bar senza dipendenze extra: fallback via chat
+            // For now, no action bar without extra dependencies: fallback to chat
             messagingPort.sendTo(player.getUniqueId(), colored);
             return;
         }
 
-        // Fallback legacy: reflection su IMessages (per vecchie versioni)
+        // Legacy fallback: use reflection for IMessages (for old versions)
         IMessages message = createMessagesForVersion(player, msg);
         if (message != null) {
             switch (where) {
@@ -136,7 +136,7 @@ public class PlayerEvents implements Listener {
             }
         }
 
-        // Fallback finale: chat via porta
+        // Final fallback: send to chat via messaging port
         messagingPort.sendTo(player.getUniqueId(), colored);
     }
 

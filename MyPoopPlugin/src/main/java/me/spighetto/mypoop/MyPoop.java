@@ -73,7 +73,7 @@ public final class MyPoop extends JavaPlugin {
     }
 
     public void deletePoops() {
-        if(listPoops.size() > 0) {
+        if (!listPoops.isEmpty()) {
             ArrayList<Entity> en = new ArrayList<>();
 
             for(World world : this.getServer().getWorlds()) {
