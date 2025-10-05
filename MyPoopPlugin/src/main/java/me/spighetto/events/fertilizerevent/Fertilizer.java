@@ -105,48 +105,51 @@ public class Fertilizer {
         cropsList.clear();
         saplingsList.clear();
 
-        //double plY = Math.abs(playerLocation.getY() - Math.floor(playerLocation.getY())) > 0.5 ? Math.round(playerLocation.getY()) : Math.floor(playerLocation.getY());
-        //double plX = Math.abs(playerLocation.getX() - Math.floor(playerLocation.getX())) > 0.5 ? Math.round(playerLocation.getX()) : Math.floor(playerLocation.getX());
-        //double plZ = Math.abs(playerLocation.getZ() - Math.floor(playerLocation.getZ())) > 0.5 ? Math.round(playerLocation.getZ()) : Math.floor(playerLocation.getZ());
-
         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-
             double plY = playerLocation.getY();
             double plX = playerLocation.getX();
             double plZ = playerLocation.getZ();
             long y = Math.round(plY);
 
-            for(int x = (int) (plX - plugin.getPoopConfig().getRadius()); x <= plX + plugin.getPoopConfig().getRadius(); x++) {
-                for(int z = (int) (plZ - plugin.getPoopConfig().getRadius()); z <= plZ + plugin.getPoopConfig().getRadius(); z++) {
-                    Location l = new Location(player.getLocation().getWorld(), x, y, z);
-                    l.add(x > 0 ? 0.5 : -0.5, 0.0, z > 0 ? 0.5 : -0.5);
-                    double dist = (plX - l.getX()) * (plX - l.getX()) + (plZ - l.getZ()) * (plZ - l.getZ());
+            double radius = plugin.getPoopConfig().getRadius();
+            double radiusSquared = radius * radius;
 
-                    if (l.getBlock().getBlockData() instanceof Ageable) {
-                        if (((Ageable) l.getBlock().getBlockData()).getAge() < ((Ageable) l.getBlock().getBlockData()).getMaximumAge()) {
-                            cropsList.add(new CropsFound(l.getBlock(), dist));
-                        }
-                    } else if (l.getBlock().getBlockData() instanceof Sapling) {
-                        saplingsList.add(new SaplingsFound(l.getBlock(), dist));
-                    } else {
-                        l.getWorld().spawnParticle(Particle.BLOCK_DUST, l.getX() + 0.5, l.getY() + 1, l.getZ() + 0.5, 50, 0.2, 0.2, 0.2, l.getBlock().getBlockData());
+            // Scan bounding box, but only process blocks within circular radius
+            for(int x = (int) (plX - radius); x <= plX + radius; x++) {
+                for(int z = (int) (plZ - radius); z <= plZ + radius; z++) {
+                    // Calculate squared distance once (avoid sqrt for performance)
+                    double dx = plX - x;
+                    double dz = plZ - z;
+                    double distSquared = dx * dx + dz * dz;
+
+                    // Skip blocks outside circular radius
+                    if (distSquared > radiusSquared) {
+                        continue;
                     }
+
+                    Location l = new Location(player.getLocation().getWorld(), x, y, z);
+
+                    // Get BlockData only once
+                    var blockData = l.getBlock().getBlockData();
+
+                    if (blockData instanceof Ageable) {
+                        Ageable ageable = (Ageable) blockData;
+                        // Only add crops that can grow
+                        if (ageable.getAge() < ageable.getMaximumAge()) {
+                            cropsList.add(new CropsFound(l.getBlock(), distSquared));
+                        }
+                    } else if (blockData instanceof Sapling) {
+                        saplingsList.add(new SaplingsFound(l.getBlock(), distSquared));
+                    }
+                    // Removed: particle spam for non-crop blocks
                 }
             }
+
+            // Sort AFTER scanning completes (fixes race condition)
+            Collections.sort(cropsList);
+            Collections.sort(saplingsList);
+
         }, 2);
-
-        Collections.sort(cropsList);
-        printCrops();
-    }
-
-    private void printCrops() {
-        cropsList.forEach(cropped -> {
-            player.sendMessage(cropped.crop.getType() + " -> " + cropped.crop.getX() + " - " + cropped.crop.getZ() + " | " + cropped.dist + "\n");
-        });
-
-        saplingsList.forEach(saplingg -> {
-            player.sendMessage(saplingg.sapling.getType() + " -> " + saplingg.sapling.getX() + " - " + saplingg.sapling.getZ() + " | " + saplingg.dist + "\n");
-        });
     }
 
     private void fertilizeCrops(Integer index) {
