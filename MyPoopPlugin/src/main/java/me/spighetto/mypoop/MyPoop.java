@@ -108,14 +108,18 @@ public final class MyPoop extends JavaPlugin {
         Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> {
             listPoops.remove(poop.getPoopItem().getUniqueId());
 
-            boolean needToLoad = poopChunk.isLoaded();
-            if(!needToLoad)
+            // Check if chunk is loaded before attempting operations
+            boolean wasLoaded = poopChunk.isLoaded();
+            if (!wasLoaded) {
                 poopChunk.load();
+            }
 
             poop.delete();
 
-            if(!needToLoad)
+            // Only unload if we loaded it ourselves
+            if (!wasLoaded) {
                 poopChunk.unload();
+            }
 
         }, this.getPoopConfig().getDelay());
     }
