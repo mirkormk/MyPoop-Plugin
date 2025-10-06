@@ -36,27 +36,27 @@ sourceSets {
     val main by getting {
         java.setSrcDirs(
             listOf(
-                // Sorgenti del plugin
+                // Plugin sources (legacy layout kept during migration)
                 rootProject.file("MyPoopPlugin/src/main/java").path,
-                // Forniamo IPoop/IMessages a compile-time
+                // Provide IPoop / IMessages interfaces at compile-time
                 rootProject.file("VersionsInterfaces/src/main/java").path,
             ),
         )
         resources.setSrcDirs(
             listOf(
-                // Solo le risorse del plugin (evito duplicati di plugin.yml)
+                // Only plugin resources (avoid duplicate plugin.yml)
                 rootProject.file("MyPoopPlugin/src/main/resources").path,
             ),
         )
     }
 }
 
-// Espansione versione in plugin.yml
+// Expand version in plugin.yml
 tasks.named<ProcessResources>("processResources") {
     filesMatching("plugin.yml") { expand("project" to project) }
 }
 
-// Packaging: solo classi del plugin (niente moduli NMS per ora)
+// Packaging: only plugin classes (no shaded NMS modules yet)
 tasks.named<Jar>("jar") {
     archiveFileName.set("MyPoop.jar")
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
@@ -146,7 +146,7 @@ tasks.register("devHelp") {
 }
 
 // ----------------------
-// Quality tooling (non bloccanti)
+// Quality tooling (non blocking)
 // ----------------------
 spotless {
     java {
@@ -169,5 +169,5 @@ checkstyle {
 
 jacoco { toolVersion = "0.8.10" }
 
-// Non bloccare build con i check di Spotless
+// Do not fail the build on style violations (formatting is advisory)
 tasks.matching { it.name.startsWith("spotless") && it.name.endsWith("Check") }.configureEach { enabled = false }
