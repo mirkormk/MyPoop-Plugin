@@ -56,10 +56,16 @@ tasks.named<ProcessResources>("processResources") {
     filesMatching("plugin.yml") { expand("project" to project) }
 }
 
-// Packaging: only plugin classes (no shaded NMS modules yet)
+// Packaging: build a single plugin jar including core classes (fat jar)
 tasks.named<Jar>("jar") {
     archiveFileName.set("MyPoop.jar")
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+    // Unpack core jar into plugin jar so Paper sees a single artifact
+    dependsOn(":mypoop-core:jar")
+    val coreJar = project(":mypoop-core").tasks.named<Jar>("jar").flatMap { it.archiveFile }
+    from(coreJar.map { zipTree(it) }) {
+        exclude("META-INF/*.SF", "META-INF/*.DSA", "META-INF/*.RSA")
+    }
 }
 
 // -------------------------------------------------
