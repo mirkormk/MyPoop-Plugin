@@ -1,7 +1,18 @@
 # MyPoop-Plugin
 
+[![Gradle CI](https://github.com/mirkormk/MyPoop-Plugin/actions/workflows/gradle.yml/badge.svg)](https://github.com/mirkormk/MyPoop-Plugin/actions/workflows/gradle.yml)
+
 Visit my plugin on SpigotMC at this link
 https://www.spigotmc.org/resources/mypoop.77372/
+
+## Support Window
+- Primary (baseline for new features): Paper 1.21.x (Java 21). Baseline migration in progress (see ADR-003/005).
+- Transitional support: Paper 1.20.6 and 1.19.4 (Java 17 runtime). Code remains source-compatible across this window.
+- No NMS modules for new versions; Paper API first, graceful degradation where needed.
+
+See ADRs for details:
+- docs/adr/adr-003-migrate-to-paper.md
+- docs/adr/adr-005-multi-version-strategy.md
 
 ## Development
 

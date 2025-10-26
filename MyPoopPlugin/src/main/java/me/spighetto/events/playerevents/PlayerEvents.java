@@ -4,12 +4,8 @@ import me.spighetto.events.fertilizerevent.Fertilizer;
 import me.spighetto.mypoop.Constants;
 import me.spighetto.mypoop.MyPoop;
 import me.spighetto.mypoop.core.port.PlayerMessagingPort;
-import me.spighetto.mypoop.factory.MessagesFactory;
-import me.spighetto.mypoop.factory.PoopFactory;
-import me.spighetto.mypoopversionsinterfaces.IMessages;
 import me.spighetto.mypoopversionsinterfaces.IPoop;
 import me.spighetto.mypoop.version.VersionCapabilities;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -102,41 +98,32 @@ public class PlayerEvents implements Listener {
 
     public void printMessage(Player player, String msg) {
         int where = plugin.getPoopConfig().getWherePrint();
-        String colored = ChatColor.translateAlternateColorCodes('&', msg);
+        String colored = versionCapabilities.colorize(msg);
 
-        if (where == Constants.MESSAGE_LOCATION_TITLE && versionCapabilities.supportsTitles()) {
-            versionCapabilities.sendTitle(player, msg);
-            return;
-        }
-        if (where == Constants.MESSAGE_LOCATION_SUBTITLE && versionCapabilities.supportsTitles()) {
-            versionCapabilities.sendSubtitle(player, msg);
-            return;
-        }
-        if (where == Constants.MESSAGE_LOCATION_ACTIONBAR) {
-            // For now, no action bar without extra dependencies: fallback to chat
+        if (where == Constants.MESSAGE_LOCATION_TITLE) {
+            if (versionCapabilities.supportsTitles() && versionCapabilities.sendTitle(player, msg)) {
+                return;
+            }
             messagingPort.sendTo(player.getUniqueId(), colored);
             return;
         }
 
-        // Legacy fallback: use reflection for IMessages (for old versions)
-        IMessages message = createMessagesForVersion(player, msg);
-        if (message != null) {
-            switch (where) {
-                case Constants.MESSAGE_LOCATION_TITLE:
-                    message.sendTitle();
-                    return;
-                case Constants.MESSAGE_LOCATION_SUBTITLE:
-                    message.sendSubtitle();
-                    return;
-                case Constants.MESSAGE_LOCATION_ACTIONBAR:
-                    message.printActionBar();
-                    return;
-                default:
-                    break;
+        if (where == Constants.MESSAGE_LOCATION_SUBTITLE) {
+            if (versionCapabilities.supportsTitles() && versionCapabilities.sendSubtitle(player, msg)) {
+                return;
             }
+            messagingPort.sendTo(player.getUniqueId(), colored);
+            return;
         }
 
-        // Final fallback: send to chat via messaging port
+        if (where == Constants.MESSAGE_LOCATION_ACTIONBAR) {
+            if (versionCapabilities.supportsActionBar() && versionCapabilities.sendActionBar(player, msg)) {
+                return;
+            }
+            messagingPort.sendTo(player.getUniqueId(), colored);
+            return;
+        }
+
         messagingPort.sendTo(player.getUniqueId(), colored);
     }
 
@@ -149,20 +136,10 @@ public class PlayerEvents implements Listener {
     }
 
     private IPoop createPoopForVersion(Player player) {
-        try {
-            return PoopFactory.createPoop(player, plugin.serverVersion);
-        } catch (PoopFactory.UnsupportedVersionException e) {
-            plugin.getLogger().severe("Failed to create poop for player " + player.getName() + ": " + e.getMessage());
-            return null;
+        IPoop poop = versionCapabilities.spawnPoop(player);
+        if (poop == null) {
+            plugin.getLogger().severe("Failed to spawn poop entity for player " + player.getName());
         }
-    }
-
-    private IMessages createMessagesForVersion(Player player, String msg) {
-        try {
-            return MessagesFactory.createMessages(player, msg, plugin.serverVersion);
-        } catch (MessagesFactory.UnsupportedVersionException e) {
-            plugin.getLogger().warning("Failed to create messages for player " + player.getName() + ": " + e.getMessage());
-            return null;
-        }
+        return poop;
     }
 }

@@ -15,11 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import me.spighetto.mypoop.adapter.messaging.BukkitPlayerMessagingAdapter;
-import me.spighetto.mypoop.adapter.logging.BukkitLoggingAdapter;
-import me.spighetto.mypoop.adapter.config.BukkitConfigAdapter;
 import me.spighetto.mypoop.core.port.PlayerMessagingPort;
-import me.spighetto.mypoop.core.port.LoggingPort;
-import me.spighetto.mypoop.core.port.ConfigPort;
 import me.spighetto.mypoop.version.VersionCapabilities;
 import java.util.logging.Level;
 
@@ -30,10 +26,8 @@ public final class MyPoop extends JavaPlugin {
     public final Set<UUID> listPoops = ConcurrentHashMap.newKeySet();
     public int serverVersion;
 
-    // Porte/adapters
+    // Ports/adapters
     private PlayerMessagingPort messagingPort;
-    private LoggingPort loggingPort;
-    private ConfigPort configPort;
 
     // Version capabilities (infrastructure)
     private VersionCapabilities versionCapabilities;
@@ -44,9 +38,7 @@ public final class MyPoop extends JavaPlugin {
 
         // Wiring adapters
         this.messagingPort = new BukkitPlayerMessagingAdapter();
-        this.loggingPort = new BukkitLoggingAdapter(getLogger());
-        this.configPort = new BukkitConfigAdapter(getConfig());
-        this.versionCapabilities = new VersionCapabilities(serverVersion);
+        this.versionCapabilities = new VersionCapabilities(getLogger());
 
         if(!isCompatibleVersion()){
             Bukkit.getConsoleSender().sendMessage("MyPoop: Error: incompatible server version");
@@ -125,7 +117,8 @@ public final class MyPoop extends JavaPlugin {
     }
 
     private boolean isCompatibleVersion() {
-        return serverVersion >= 8 && serverVersion <= 19;
+        return serverVersion >= Constants.MIN_SUPPORTED_MINOR_VERSION
+            && serverVersion <= Constants.MAX_SUPPORTED_MINOR_VERSION;
     }
 
     public void readConfigs() {
